@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from numpy.linalg import norm
 import copy
 import math
-import os.path
 
 # построение обратной матрицы, где M - матрица, для которой необходимо построить обратную матрицу
 def inverse_m(M):
