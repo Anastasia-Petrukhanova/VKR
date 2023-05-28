@@ -227,19 +227,19 @@ for (u_b, v_b) in [(0.0,0.0), (1.0, -1.0), (1.0, 0.0)]:
     u = []
     u, v = Optical_Flow(A1, A2, N, frame_width, alpha, u_b, v_b)
 
-    tan = []
+    angle = []
     for i in range(frame_width, N + frame_width):
-        t = []
+        an = []
         for j in range(frame_width, N + frame_width):
-            t.append(abs(-1-v[i][j]/u[i][j]))
-        tan.append(t)
+            an.append(abs(math.atan(-1)*(180/math.pi)-math.atan(v[i][j]/u[i][j])*(180/math.pi)))
+        angle.append(an)
 
     frame_w = []
     for t in range(0, N//2-1):
         sum = 0
         for j in range(t, N-t):
             for i in range(t, N-t):
-                sum += tan[i][j]
+                sum += angle[i][j]
         accur[(int(u_b), int(v_b))].append(sum/((N-t)**2))
         frame_w.append(t+1)
 

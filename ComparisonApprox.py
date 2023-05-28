@@ -169,19 +169,19 @@ def Seidel_5(N, b, H, alpha, B, accur, count, u, v):
                     u[i][j] = x_1[с, 0]
                     v[i][j] = x_1[с+1, 0]
                     с = с + 2
-            tan = []
+            angle = []
             for j in range(0, N):
-                t = []
+                an = []
                 for i in range(0, N):
-                    t.append(0)
-                tan.append(t)
+                    an.append(0)
+                angle.append(an)
             for i in range(frame_width, N+frame_width):
                 for j in range(frame_width, N+frame_width):
-                    tan[i-frame_width][j-frame_width] = abs(-1-v[i][j]/u[i][j])
+                    angle[i-frame_width][j-frame_width] = abs(math.atan(-1)*(180/math.pi)-math.atan(v[i][j]/u[i][j])*(180/math.pi))
             sum = 0
             for j in range(0, N):
                 for i in range(0, N):
-                    sum += tan[i][j]
+                    sum += angle[i][j]
             accur.append(sum/((N)*(N)))
         print(" norm = ", norm(n1,np.inf), "\t k = ", k)
         for i in range(0, N**2):
@@ -260,19 +260,19 @@ def Seidel_9(N, b, H, alpha, B, accur, count, u, v):
                     u[i][j] = x_1[с, 0]
                     v[i][j] = x_1[с+1, 0]
                     с = с + 2
-            tan = []
+            angle = []
             for j in range(0, N):
-                t = []
+                an = []
                 for i in range(0, N):
-                    t.append(0)
-                tan.append(t)
+                    an.append(0)
+                angle.append(an)
             for i in range(frame_width, N+frame_width):
                 for j in range(frame_width, N+frame_width):
-                    tan[i-frame_width][j-frame_width] = abs(-1-v[i][j]/u[i][j])
+                    angle[i-frame_width][j-frame_width] = abs(math.atan(-1)*(180/math.pi)-math.atan(v[i][j]/u[i][j])*(180/math.pi))
             sum = 0
             for j in range(0, N):
                 for i in range(0, N):
-                    sum += tan[i][j]
+                    sum += angle[i][j]
             accur.append(sum/((N)*(N)))
         print("norm = ", norm(n1,np.inf), "\t k = ", k)
         for i in range(0, N**2):
@@ -382,6 +382,7 @@ A3 = Image.fromarray(np.array(A3))
 
 accur = {5:[], 9:[]}
 count = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850] # количество итераций
+
 v = []
 u = []
 for i in [5, 9]:
