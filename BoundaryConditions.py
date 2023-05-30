@@ -231,16 +231,18 @@ for (u_b, v_b) in [(0.0,0.0), (1.0, -1.0), (1.0, 0.0)]:
     for i in range(frame_width, N + frame_width):
         an = []
         for j in range(frame_width, N + frame_width):
-            an.append(abs(math.atan(-1)*(180/math.pi)-math.atan(v[i][j]/u[i][j])*(180/math.pi)))
+            an.append(abs(-1-v[i][j]/u[i][j]))
         angle.append(an)
 
     frame_w = []
     for t in range(0, N//2-1):
         sum = 0
+        r = 0
         for j in range(t, N-t):
             for i in range(t, N-t):
                 sum += angle[i][j]
-        accur[(int(u_b), int(v_b))].append(sum/((N-t)**2))
+                r += 1
+        accur[(int(u_b), int(v_b))].append(sum/r)
         frame_w.append(t+1)
 
     # построение поля скоростей (вектора не нормированы)

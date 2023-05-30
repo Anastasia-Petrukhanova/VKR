@@ -139,7 +139,7 @@ def q9(N, mX, mY, mT, u, v, alpha):
 
 # метода Гаусса-Зейделя для пятиточечной аппроксимации лапласиана,
 # где N - размер входного изображения, b - вектор q из Hz=q, H - диагональ матрицы H, alpha - параметр регуляризации по А. Н. Тихонову, B - диагональ матрицы B, accur - массив с полученными погрешностями, count - массив с количеством итераций, u, v - искомые функции
-def Seidel_5(N, b, H, alpha, B, accur, count, u, v):
+def Seidel_5(N, b, H, alpha, B, accur, count, u, v, frame_width):
     x_0 = np.array(b.copy())
     x_1 = np.array(b.copy())
     for i in range(0, N**2):
@@ -177,12 +177,14 @@ def Seidel_5(N, b, H, alpha, B, accur, count, u, v):
                 angle.append(an)
             for i in range(frame_width, N+frame_width):
                 for j in range(frame_width, N+frame_width):
-                    angle[i-frame_width][j-frame_width] = abs(math.atan(-1)*(180/math.pi)-math.atan(v[i][j]/u[i][j])*(180/math.pi))
+                    angle[i-frame_width][j-frame_width] = abs(-1-v[i][j]/u[i][j])
             sum = 0
-            for j in range(0, N):
-                for i in range(0, N):
+            r = 0
+            for j in range(20, N-20):
+                for i in range(20, N-20):
                     sum += angle[i][j]
-            accur.append(sum/((N)*(N)))
+                    r += 1
+            accur.append(sum/r)
         print(" norm = ", norm(n1,np.inf), "\t k = ", k)
         for i in range(0, N**2):
             C = inverse_m(np.array([[H[2*i], B[i]], 
@@ -210,7 +212,7 @@ def Seidel_5(N, b, H, alpha, B, accur, count, u, v):
 
 # метода Гаусса-Зейделя для девятиточечной аппроксимации лапласиана,
 # где N - размер входного изображения, b - вектор q из Hz=q, H - диагональ матрицы H, alpha - параметр регуляризации по А. Н. Тихонову, B - диагональ матрицы B, accur - массив с полученными погрешностями, count - массив с количеством итераций, u, v - искомые функции
-def Seidel_9(N, b, H, alpha, B, accur, count, u, v):
+def Seidel_9(N, b, H, alpha, B, accur, count, u, v, frame_width):
     x_0 = np.array(b.copy())
     x_1 = np.array(b.copy())
     for i in range(0, N**2):
@@ -268,12 +270,14 @@ def Seidel_9(N, b, H, alpha, B, accur, count, u, v):
                 angle.append(an)
             for i in range(frame_width, N+frame_width):
                 for j in range(frame_width, N+frame_width):
-                    angle[i-frame_width][j-frame_width] = abs(math.atan(-1)*(180/math.pi)-math.atan(v[i][j]/u[i][j])*(180/math.pi))
+                    angle[i-frame_width][j-frame_width] = abs(-1-v[i][j]/u[i][j])
             sum = 0
-            for j in range(0, N):
-                for i in range(0, N):
+            r = 0
+            for j in range(20, N-20):
+                for i in range(20, N-20):
                     sum += angle[i][j]
-            accur.append(sum/((N)*(N)))
+                    r += 1
+            accur.append(sum/r)
         print("norm = ", norm(n1,np.inf), "\t k = ", k)
         for i in range(0, N**2):
             x_1[i*2:i*2+2] = np.array([[0.0],[0.0]])
@@ -346,11 +350,11 @@ def Optical_Flow(A1, A2, N, frame_width, alpha, u_boundary, v_boundary, variant,
     if variant == 5:
         q = q5(N, mX, mY, mT, u, v, alpha)
         M = m_H_5(N, mX, mY, alpha)
-        vu = Seidel_5(N, q, M, alpha, a, accur, count, u, v)
+        vu = Seidel_5(N, q, M, alpha, a, accur, count, u, v, frame_width)
     else:
         q = q9(N, mX, mY, mT, u, v, alpha)
         M = m_H_9(N, mX, mY, alpha)
-        vu = Seidel_9(N, q, M, alpha, a, accur, count, u, v)
+        vu = Seidel_9(N, q, M, alpha, a, accur, count, u, v, frame_width)
 
     k = 0
     for j in range(frame_width, N+frame_width):
@@ -386,7 +390,7 @@ count = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 75
 v = []
 u = []
 for i in [5, 9]:
-    u, v = Optical_Flow(A1, A2, N, frame_width, alpha, 0, 0, i, accur[i], count)
+    u, v = Optical_Flow(A1, A2, N, frame_width, alpha, 1, -1, i, accur[i], count)
 
     # построение поля скоростей (вектора не нормированы)
     ax = plt.figure().gca()
